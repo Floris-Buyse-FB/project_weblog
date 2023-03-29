@@ -1,0 +1,12 @@
+DATA CLEANEN
+
+CLASSIFICATIE MODEL OPSTELLEN
+	- alle in de les geziene modellen proberen en vergelijken
+	- verschillende maatstaven voor nauwkeurigheid model proberen en bespreken voor en nadelen elke maatstaf
+	- confusion matrix opstellen en bespreken
+	- zo weinig mogelijk menselijke bezoekers cancellen --> welk maatstaf is hierbij belangrijk?
+
+CLI APP
+	- Input = gegevens nieuwe reeks data
+	- Output = klasse (mens, robot) met waarschijnlijkheidspercentage per sessie
+	- De mogelijkheid tot hertrainen van model bij aangevulde trainingsdata
