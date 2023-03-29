@@ -8,6 +8,14 @@ def menu():
     link = str(input("Provide a link to a .csv file with the data you want to predict on:"))
     return link
 
+def read_clean_data(link):
+    df = pd.read_csv(link)
+    df = df.drop(['NIGHT', 'ID', 'OTHER_METHOD'], axis=1)
+    X = df.loc[:, df.columns != 'ROBOT']
+    y = df['ROBOT']
+    X = X.fillna(0)
+    return X, y
+
 def predict_robot(data, y):
     # load all .sav models from directory modellen
     for file in os.listdir("modellen"):
@@ -24,13 +32,10 @@ def predict_robot(data, y):
 
 
 def main():
-    df = pd.read_csv("./data/weblogs_copy.csv")
-    df = df.drop(['NIGHT', 'ID', 'OTHER_METHOD'], axis=1)
 
-    X = df.loc[:, df.columns != 'ROBOT']
-    y = df['ROBOT']
+    link = menu()
 
-    X = X.fillna(0)
+    X, y = read_clean_data(link)
 
     predict_robot(X, y)
 
