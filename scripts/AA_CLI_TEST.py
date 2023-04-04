@@ -18,9 +18,9 @@ def read_clean_data(link):
 
 def predict_robot(data, y):
     # load all .sav models from directory modellen
-    for file in os.listdir("modellen"):
+    for file in os.listdir("models"):
         if file.endswith(".sav"):
-            model = pickle.load(open("./modellen/" + file, 'rb'))
+            model = pickle.load(open("./models/" + file, 'rb'))
             print(f"Model loaded {(file)}\n---------------------")
             print("Predicting...\n-------------")
             prediction = model.predict(data)

@@ -4,7 +4,7 @@ CLASSIFICATIE MODEL OPSTELLEN
 	- alle in de les geziene modellen proberen en vergelijken
 	- verschillende maatstaven voor nauwkeurigheid model proberen en bespreken voor en nadelen elke maatstaf
 	- confusion matrix opstellen en bespreken
-	- zo weinig mogelijk menselijke bezoekers cancellen --> welk maatstaf is hierbij belangrijk?
+	- zo weinig mogelijk menselijke bezoekers cancellen --> welk maatstaf is hierbij belangrijk? Precision, aantal false positives zo laag mogelijk
 
 CLI APP
 	- Input = gegevens nieuwe reeks data
