@@ -1,7 +1,8 @@
 import pickle
 import pandas as pd
 import os
-from sklearn.metrics import accuracy_score
+from sklearn.metrics import accuracy_score, confusion_matrix
+from sklearn.model_selection import train_test_split
 
 MODEL = "main_models/random_forest_classifier1.sav"
 
@@ -30,6 +31,46 @@ def predict_robot(data, y):
     perc_rob = (prediction == 1).sum() / len(prediction) * 100
     print("{:.2f}% Human | {:.2f}% Robot".format(perc_hum, perc_rob))
     print("Accuracy: {:.2f}".format(((accuracy_score(y, prediction)) * 100)) + "%")
+    print("Confusion matrix:\n", confusion_matrix(y, prediction))
+
+def retrain_model(X, y):
+    retrain = str(input("Do you want to retrain the model? (y/n):"))
+    while retrain != "y" and retrain != "n":
+        retrain = str(input("Do you want to retrain the model? (y/n):"))
+    
+    if retrain == "y":
+        print("Retraining model...")
+
+        model = load_model()
+
+        print(f"Model loaded {(MODEL)}\n---------------------")
+
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+        model.fit(X_train, y_train)
+
+        pred = model.predict(X_test)
+
+        print("Accuracy: {:.2f}".format(((accuracy_score(y_test, pred)) * 100)) + "%")
+
+        print("Confusion matrix:\n", confusion_matrix(y_test, pred))
+
+        save_model = str(input("Do you want to save the model? (y/n):"))
+        while save_model != 'y' and save_model != 'n':
+            save_model = str(input("Do you want to save the model? (y/n):"))
+
+        if save_model == "y":
+            name = str(input("Provide a name for the new model:"))
+            filename = "retrained_models/" + name 
+            pickle.dump(model, open(filename, 'wb'))
+            print("Model saved.")
+        else:
+            print("Model not saved.")
+            print("Exiting...")
+
+    else:
+        print("Model not retrained.")
+        print("Exiting...")
 
 def main():
     
@@ -38,6 +79,8 @@ def main():
     X, y = read_clean_data(link)
     
     predict_robot(X, y)
+
+    retrain_model(X, y)
 
 if __name__ == "__main__":
         

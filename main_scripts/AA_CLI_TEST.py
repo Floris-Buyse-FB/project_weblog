@@ -25,7 +25,7 @@ def predict_robot(data, y):
             model = pickle.load(open("main_models/" + file, 'rb'))
             print(f"Model loaded {(file)}\n---------------------")
             print("Predicting...\n-------------")
-            if file in ("kneighbors_classifier1.sav", "logistic_regression1.sav", "linear_svc1.sav"):
+            if file == "kneighbors_classifier1.sav" or file == "logistic_regression1.sav" or file == "linear_svc1.sav":
                 data1 = scaler.fit_transform(data)
                 prediction = model.predict(data1)
             else:
