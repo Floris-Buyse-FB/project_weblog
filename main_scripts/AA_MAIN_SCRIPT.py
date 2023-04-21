@@ -1,10 +1,12 @@
 import pickle
 import pandas as pd
 import os
+import math
+import numpy as np
 from sklearn.metrics import accuracy_score, confusion_matrix
 from sklearn.model_selection import train_test_split
 
-MODEL = "main_models/random_forest_classifier1.sav"
+MODEL = "main_models/random_forest_classifier2.sav"
 
 def load_model():
     model = pickle.load(open(MODEL, 'rb'))
@@ -16,7 +18,7 @@ def menu():
 
 def read_clean_data(link):
     df = pd.read_csv(link)
-    df = df.drop(['HTTP_RESPONSE_2XX', 'GET_METHOD', 'ID', 'STANDARD_DEVIATION', 'SF_REFERRER', 'SF_FILETYPE', 'OTHER_METHOD', 'POST_METHOD', 'HEAD_METHOD', 'HTTP_RESPONSE_3XX',  'HTTP_RESPONSE_4XX', 'HTTP_RESPONSE_5XX','REPEATED_REQUESTS'], axis=1)
+    df = df.drop(['ID', 'STANDARD_DEVIATION', 'SF_REFERRER', 'SF_FILETYPE', 'OTHER_METHOD', 'POST_METHOD', 'HEAD_METHOD', 'HTTP_RESPONSE_3XX',  'HTTP_RESPONSE_4XX', 'HTTP_RESPONSE_5XX','REPEATED_REQUESTS'], axis=1)
     X = df.drop(['ROBOT'], axis=1)
     y = df['ROBOT']
     return X, y
@@ -31,7 +33,7 @@ def predict_robot(data, y):
     perc_rob = (prediction == 1).sum() / len(prediction) * 100
     print("{:.2f}% Human | {:.2f}% Robot".format(perc_hum, perc_rob))
     print("Accuracy: {:.2f}".format(((accuracy_score(y, prediction)) * 100)) + "%")
-    print("Confusion matrix:\n", confusion_matrix(y, prediction))
+    print("Confusion matrix:\n", np.round(confusion_matrix(y, prediction, normalize='true'), 2))
 
 def retrain_model(X, y):
     retrain = str(input("Do you want to retrain the model? (y/n):"))
