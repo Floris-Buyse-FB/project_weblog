@@ -23,17 +23,26 @@ def read_clean_data(link):
     y = df['ROBOT']
     return X, y
 
-def predict_robot(data, y):
+def predict_robot(X, y):
     model = load_model()
     print(f"Model loaded {(MODEL)}\n---------------------")
     print("Predicting...\n-------------")
-    prediction = model.predict(data)
-    print(f"\n{prediction}\n")
-    perc_hum = (prediction == 0).sum() / len(prediction) * 100
-    perc_rob = (prediction == 1).sum() / len(prediction) * 100
-    print("{:.2f}% Human | {:.2f}% Robot".format(perc_hum, perc_rob))
+    prediction = model.predict(X)
+    
+    df = pd.DataFrame({'Actual': y, 'Predicted': prediction})
+    df['Probability Robot'] = model.predict_proba(X)[:,1]
+    df['Probability Robot'] = df['Probability Robot'].apply(lambda x: round(x, 2))
+    df['Probability Human'] = model.predict_proba(X)[:,0]
+    df['Probability Human'] = df['Probability Human'].apply(lambda x: round(x, 2))
+    df['Correct'] = df['Actual'] == df['Predicted']
+    df['Correct'] = df['Correct'].apply(lambda x: "Yes" if x == True else "No")
+
+    print(df)
+
+
     print("Accuracy: {:.2f}".format(((accuracy_score(y, prediction)) * 100)) + "%")
     print("Confusion matrix:\n", np.round(confusion_matrix(y, prediction, normalize='true'), 2))
+    print(f"{sum(df['Correct'] == 'Yes')} out of {len(df)} predictions were correct.")
 
 def retrain_model(X, y):
     retrain = str(input("Do you want to retrain the model? (y/n):"))
