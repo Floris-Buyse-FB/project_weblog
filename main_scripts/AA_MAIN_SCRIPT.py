@@ -31,9 +31,11 @@ def predict_robot(X, y):
     
     df = pd.DataFrame({'Actual': y, 'Predicted': prediction})
     df['Probability Robot'] = model.predict_proba(X)[:,1]
-    df['Probability Robot'] = df['Probability Robot'].apply(lambda x: round(x, 2))
+    df['Probability Robot'] = df['Probability Robot'].apply(lambda x: round(x * 100, 2))
+    df['Probability Robot'] = df['Probability Robot'].apply(lambda x: str(x) + "%")
     df['Probability Human'] = model.predict_proba(X)[:,0]
-    df['Probability Human'] = df['Probability Human'].apply(lambda x: round(x, 2))
+    df['Probability Human'] = df['Probability Human'].apply(lambda x: round(x * 100, 2))
+    df['Probability Human'] = df['Probability Human'].apply(lambda x: str(x) + "%")
     df['Correct'] = df['Actual'] == df['Predicted']
     df['Correct'] = df['Correct'].apply(lambda x: "Yes" if x == True else "No")
 
