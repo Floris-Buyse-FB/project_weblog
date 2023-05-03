@@ -6,7 +6,7 @@ import numpy as np
 from sklearn.metrics import accuracy_score, confusion_matrix
 from sklearn.model_selection import train_test_split
 
-MODEL = "main_models/random_forest_classifier2.sav"
+MODEL = "main_models/random_forest_classifier_drop2.sav"
 
 def load_model():
     model = pickle.load(open(MODEL, 'rb'))

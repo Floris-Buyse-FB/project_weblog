@@ -5,8 +5,10 @@ import math
 import numpy as np
 from sklearn.metrics import accuracy_score, confusion_matrix
 from sklearn.preprocessing import StandardScaler
+from sklearn.impute import SimpleImputer
 
 scaler = StandardScaler()
+imputer = SimpleImputer(missing_values=np.nan, strategy='mean')
 
 def menu():
     link = str(input("Provide a link to a .csv file with the data you want to predict on:"))
@@ -19,10 +21,18 @@ def read_clean_data(link):
     y = df['ROBOT']
     return X, y
 
+def read_clean_data_imputed(link):
+    df = pd.read_csv(link)
+    df = df.drop(['ID', 'OTHER_METHOD', 'POST_METHOD', 'HEAD_METHOD', 'HTTP_RESPONSE_3XX',  'HTTP_RESPONSE_4XX', 'HTTP_RESPONSE_5XX','REPEATED_REQUESTS'], axis=1)
+    imputer.fit(df)
+    df = pd.DataFrame(imputer.transform(df), columns=df.columns)
+    X = df.drop(['ROBOT'], axis=1)
+    y = df['ROBOT']
+    return X, y
+
 def predict_robot(data, y):
-    # load all .sav models from directory modellen
     for file in os.listdir("main_models"):
-        if file.endswith("2.sav"):
+        if file.endswith("2.sav") and not file.endswith('_2.sav'):
             model = pickle.load(open("main_models/" + file, 'rb'))
             print(f"Model loaded {(file)}\n---------------------")
             print("Predicting...\n-------------")
@@ -31,6 +41,22 @@ def predict_robot(data, y):
                 prediction = model.predict(data1)
             else:
                 prediction = model.predict(data)
+    
+            try:
+                df = pd.DataFrame({'Actual': y, 'Predicted': prediction})
+                df['Probability Robot'] = model.predict_proba(data)[:,1]
+                df['Probability Robot'] = df['Probability Robot'].apply(lambda x: round(x * 100, 2))
+                df['Probability Robot'] = df['Probability Robot'].apply(lambda x: str(x) + "%")
+                df['Probability Human'] = model.predict_proba(data)[:,0]
+                df['Probability Human'] = df['Probability Human'].apply(lambda x: round(x * 100, 2))
+                df['Probability Human'] = df['Probability Human'].apply(lambda x: str(x) + "%")
+                df['Correct'] = df['Actual'] == df['Predicted']
+                df['Correct'] = df['Correct'].apply(lambda x: "Yes" if x == True else "No")
+
+                print(df)
+            except:
+                pass
+
             perc_hum = (prediction == 0).sum() / len(prediction) * 100
             perc_rob = (prediction == 1).sum() / len(prediction) * 100
             cm = np.round(confusion_matrix(y, prediction, normalize='true'), 2)
@@ -39,6 +65,40 @@ def predict_robot(data, y):
             print(f"Confusion matrix:\n{cm}")
             print("\n----------------")
 
+def predict_robot_imputed(data, y):
+    for file in os.listdir("main_models"):
+        if file.endswith('_2.sav'):
+            model = pickle.load(open("main_models/" + file, 'rb'))
+            print(f"Model loaded {(file)}\n---------------------")
+            print("Predicting...\n-------------")
+            if file == "kneighbors_classifier_imputed_2.sav" or file == "logistic_regression_imputed_2.sav" or file == "linear_svc_imputed_2.sav":
+                data1 = scaler.fit_transform(data)
+                prediction = model.predict(data1)
+            else:
+                prediction = model.predict(data)
+    
+            try:
+                df = pd.DataFrame({'Actual': y, 'Predicted': prediction})
+                df['Probability Robot'] = model.predict_proba(data)[:,1]
+                df['Probability Robot'] = df['Probability Robot'].apply(lambda x: round(x * 100, 2))
+                df['Probability Robot'] = df['Probability Robot'].apply(lambda x: str(x) + "%")
+                df['Probability Human'] = model.predict_proba(data)[:,0]
+                df['Probability Human'] = df['Probability Human'].apply(lambda x: round(x * 100, 2))
+                df['Probability Human'] = df['Probability Human'].apply(lambda x: str(x) + "%")
+                df['Correct'] = df['Actual'] == df['Predicted']
+                df['Correct'] = df['Correct'].apply(lambda x: "Yes" if x == True else "No")
+
+                print(df)
+            except:
+                pass
+
+            perc_hum = (prediction == 0).sum() / len(prediction) * 100
+            perc_rob = (prediction == 1).sum() / len(prediction) * 100
+            cm = np.round(confusion_matrix(y, prediction, normalize='true'), 2)
+            print("{:.2f}% Human | {:.2f}% Robot".format(perc_hum, perc_rob))
+            print("Accuracy: {:.2f}".format(((accuracy_score(y, prediction)) * 100)) + "%")
+            print(f"Confusion matrix:\n{cm}")
+            print("\n----------------")
 
 def main():
 
@@ -47,6 +107,12 @@ def main():
     X, y = read_clean_data(link)
 
     predict_robot(X, y)
+
+    print('SWITCHING TO IMPUTED DATA...\n-----------------------------\n')
+
+    Data, y2 = read_clean_data_imputed(link)
+
+    predict_robot_imputed(Data, y2)
 
 if __name__ == "__main__":
 
