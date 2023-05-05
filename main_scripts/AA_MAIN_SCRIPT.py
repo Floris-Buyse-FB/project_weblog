@@ -21,7 +21,7 @@ def read_clean_data(link):
     df = df.drop(['ID', 'STANDARD_DEVIATION', 'SF_REFERRER', 'SF_FILETYPE', 'OTHER_METHOD', 'POST_METHOD', 'HEAD_METHOD', 'HTTP_RESPONSE_3XX',  'HTTP_RESPONSE_4XX', 'HTTP_RESPONSE_5XX','REPEATED_REQUESTS'], axis=1)
     X = df.drop(['ROBOT'], axis=1)
     y = df['ROBOT']
-    return X, y
+    return X, y, df
 
 def predict_robot(X, y):
     model = load_model()
@@ -46,7 +46,11 @@ def predict_robot(X, y):
     print("Confusion matrix:\n", np.round(confusion_matrix(y, prediction, normalize='true'), 2))
     print(f"{sum(df['Correct'] == 'Yes')} out of {len(df)} predictions were correct.")
 
-def retrain_model(X, y):
+def merge_old_new_data(df, new_data_df):
+    df = pd.concat([df, new_data_df], axis=0, ignore_index=True)
+    return df
+
+def retrain_model(df_new):
     retrain = str(input("Do you want to retrain the model? (y/n):"))
     while retrain != "y" and retrain != "n":
         retrain = str(input("Do you want to retrain the model? (y/n):"))
@@ -58,6 +62,14 @@ def retrain_model(X, y):
 
         print(f"Model loaded {(MODEL)}\n---------------------")
 
+        old_data = pd.read_csv("data/weblogs1.csv")
+        old_data = old_data.drop(['ID', 'STANDARD_DEVIATION', 'SF_REFERRER', 'SF_FILETYPE', 'OTHER_METHOD', 'POST_METHOD', 'HEAD_METHOD', 'HTTP_RESPONSE_3XX',  'HTTP_RESPONSE_4XX', 'HTTP_RESPONSE_5XX','REPEATED_REQUESTS'], axis=1)
+
+        full_new_data = merge_old_new_data(old_data, df_new)
+
+        X = full_new_data.drop(['ROBOT'], axis=1)
+        y = full_new_data['ROBOT']
+
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
         model.fit(X_train, y_train)
@@ -66,7 +78,7 @@ def retrain_model(X, y):
 
         print("Accuracy: {:.2f}".format(((accuracy_score(y_test, pred)) * 100)) + "%")
 
-        print("Confusion matrix:\n", confusion_matrix(y_test, pred))
+        print("Confusion matrix:\n", np.round(confusion_matrix(y_test, pred, normalize='true'), 2))
 
         save_model = str(input("Do you want to save the model? (y/n):"))
         while save_model != 'y' and save_model != 'n':
@@ -89,11 +101,11 @@ def main():
     
     link = menu()
     
-    X, y = read_clean_data(link)
+    X, y, df_new = read_clean_data(link)
     
     predict_robot(X, y)
 
-    retrain_model(X, y)
+    retrain_model(df_new)
 
 if __name__ == "__main__":
         
