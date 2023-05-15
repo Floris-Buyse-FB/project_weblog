@@ -22,14 +22,16 @@ def read_clean_data(link):
     return X, y
 
 def predict_robot(data, y):
-    for file in os.listdir("main_models"):
+    for file in os.listdir("main_models2"):
 
-        model = pickle.load(open("main_models/" + file, 'rb'))
+        model = pickle.load(open("main_models2/" + file, 'rb'))
         print(f"Model loaded {(file)}\n---------------------")
 
         print("Predicting...\n-------------")
 
-        if file == "kneighbors_classifier2.sav" or file == "logistic_regression2.sav" or file == "linear_svc2.sav":
+        # if file has scaled in its name, scale the data
+
+        if file.endswith("scaled.sav"):
             data1 = scaler.fit_transform(data)
             prediction = model.predict(data1)
         else:
