@@ -25,4 +25,4 @@ In de map ``main_scripts`` kan men alle scripts vinden die gebruikt zijn tijdens
 ## Rapport
 ---
 
-In ``rapport.ipynb`` kan men de resultaten, conclusies alsook de datacleaning en datapreprocessing processen vinden. Het biedt een overzicht van alles wat ik heb gedaan om tot mijn resultaten te komen.
+In ``rapport.ipynb`` kan men de resultaten, conclusies alsook de datacleaning en datapreprocessing processen vinden. Het biedt een overzicht van alles wat ik heb gedaan om tot mijn resultaten te komen. 
