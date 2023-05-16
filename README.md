@@ -1,6 +1,7 @@
 # project_weblog
 
 ## Models
+
 ---
 
 Alle getrainde models zijn te vinden in de map ``main_models``
@@ -8,6 +9,7 @@ Alle getrainde models zijn te vinden in de map ``main_models``
 Ook kan men hertrainde models terugvinden in de map ``retrained_models``
 
 ## Scripts
+
 ---
 
 In de map ``main_scripts`` kan men alle scripts vinden die gebruikt zijn tijdens dit project:
@@ -23,6 +25,7 @@ In de map ``main_scripts`` kan men alle scripts vinden die gebruikt zijn tijdens
 - In het script ``split_csv.ipynb`` kan men de code vinden die gebruikt wordt om het csv-bestand op te splitsen in 95% / 5%.
 
 ## Rapport
+
 ---
 
-In ``rapport.ipynb`` kan men de resultaten, conclusies alsook de datacleaning en datapreprocessing processen vinden. Het biedt een overzicht van alles wat ik heb gedaan om tot mijn resultaten te komen. 
+In ``rapport.ipynb`` kan men de resultaten, conclusies alsook de datacleaning en datapreprocessing processen vinden. Het biedt een overzicht van alles wat ik heb gedaan om tot mijn resultaten te komen.
