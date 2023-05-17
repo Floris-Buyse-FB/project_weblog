@@ -1,12 +1,10 @@
 import pickle
 import pandas as pd
-import os
-import math
 import numpy as np
 from sklearn.metrics import accuracy_score, confusion_matrix
 from sklearn.model_selection import train_test_split
 
-MODEL = "main_models/voting_classifier_drop2.sav"
+MODEL = "main_models/gbrt_best.sav"
 
 def load_model():
     model = pickle.load(open(MODEL, 'rb'))
